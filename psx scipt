@@ -1,4 +1,4 @@
-local Library = require(game:GetService("ReplicatedStorage").bigdick) -- Import PSX Library
+local Library = require(game:GetService("ReplicatedStorage")) -- Import PSX Library
 
 local pets = {} 
 --import pets in inventory
